@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useSvgDimensions } from "../../hooks/SvgDimensions";
 
 interface AxisLeftProps {
-  parentSvgRef: React.RefObject<SVGSVGElement>;
   tickWidth: number;
   padding: number;
   dataLowerBound: number;
@@ -12,33 +11,16 @@ interface AxisLeftProps {
 
 const AxisLeft = ({
   tickWidth,
-  parentSvgRef,
   padding,
   dataLowerBound,
   dataUpperBound,
   nTicks,
   invert,
 }: AxisLeftProps) => {
-  const [parentExtent, setParentExtent] = useState(0);
-  // const [parentHeight, setParentHeight] = useState(0);
-  // const [parentWidth, setParentWidth] = useState(0);
-
-  useEffect(() => {
-    if (!parentSvgRef.current) return;
-
-    setParentExtent(parentSvgRef.current.clientHeight);
-    // setParentHeight(parentSvgRef.current.clientHeight);
-    // setParentWidth(parentSvgRef.current.clientWidth);
-  }, []);
-
-  if (!parentSvgRef.current) return;
-
-  // setParentExtent(parentSvgRef.current.clientHeight);
-
-  console.log(parentExtent);
+  const { height } = useSvgDimensions();
 
   const xOutputStart = padding;
-  const xOutputEnd = parentExtent - padding;
+  const xOutputEnd = height - padding;
   const xSlope =
     (xOutputEnd - xOutputStart) / (dataUpperBound - dataLowerBound);
 
@@ -57,16 +39,16 @@ const AxisLeft = ({
 
   return (
     <>
-      <g>
+      <g id="axis-left">
         <line
           x1={padding}
           x2={padding}
           y1={padding}
-          y2={parentExtent - padding}
+          y2={height - padding}
           stroke="black"
         />
       </g>
-      <g>
+      <g id="axis-left-ticks">
         {rangeSteps.map((step, index) => (
           <line
             key={index}
@@ -79,6 +61,7 @@ const AxisLeft = ({
         ))}
         {rangeSteps.map((step, index) => (
           <text
+            id="axis-left-tick-labels"
             key={index}
             fill="white"
             x={padding - tickWidth * 3}

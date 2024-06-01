@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useSvgDimensions } from "../../hooks/SvgDimensions";
 
 interface AxisBottomProps {
-  parentSvgRef: React.RefObject<SVGSVGElement>;
   tickWidth: number;
   padding: number;
   dataLowerBound: number;
@@ -12,29 +11,16 @@ interface AxisBottomProps {
 
 const AxisBottom = ({
   tickWidth,
-  parentSvgRef,
   padding,
   dataLowerBound,
   dataUpperBound,
   nTicks,
   invert,
 }: AxisBottomProps) => {
-  const [parentExtent, setParentExtent] = useState(0);
-  const [parentHeight, setParentHeight] = useState(0);
-  //   const [parentWidth, setParentWidth] = useState(0);
-
-  useEffect(() => {
-    if (!parentSvgRef.current) return;
-
-    setParentExtent(parentSvgRef.current.clientWidth);
-    setParentHeight(parentSvgRef.current.clientHeight);
-    // setParentWidth(parentSvgRef.current.clientWidth);
-  }, []);
-
-  console.log(parentExtent);
+  const { width, height } = useSvgDimensions();
 
   const xOutputStart = padding;
-  const xOutputEnd = parentExtent - padding;
+  const xOutputEnd = width - padding;
   const xSlope =
     (xOutputEnd - xOutputStart) / (dataUpperBound - dataLowerBound);
 
@@ -55,32 +41,33 @@ const AxisBottom = ({
 
   return (
     <>
-      <g>
+      <g id="axis-bottom">
         <line
           x1={padding}
-          x2={parentExtent - padding}
-          y1={parentHeight - padding}
-          y2={parentHeight - padding}
+          x2={width - padding}
+          y1={height - padding}
+          y2={height - padding}
           stroke="black"
         />
       </g>
-      <g>
+      <g id="axis-bottom-ticks">
         {rangeSteps.map((step, index) => (
           <line
             key={index}
             stroke="black"
             x1={step}
             x2={step}
-            y1={parentHeight - padding + tickWidth}
-            y2={parentHeight - padding}
+            y1={height - padding + tickWidth}
+            y2={height - padding}
           />
         ))}
         {rangeSteps.map((step, index) => (
           <text
+            id="axis-bottom-tick-labels"
             key={index}
             fill="white"
             x={step}
-            y={parentHeight - padding + tickWidth * 3}
+            y={height - padding + tickWidth * 3}
             fontSize={16}
             textAnchor="middle"
             dominantBaseline="middle"
