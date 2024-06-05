@@ -18,7 +18,6 @@ const SvgDimensionsProvider = ({ children }: SvgDimensionsProviderProps) => {
       if (svgRef.current) {
         const { width, height } = svgRef.current.getBoundingClientRect();
         setDimensions({ width, height });
-        console.log('SVG Dimensions:', { width, height });
       }
     };
 
@@ -31,7 +30,13 @@ const SvgDimensionsProvider = ({ children }: SvgDimensionsProviderProps) => {
 
   return (
     <SvgDimensionsContext.Provider value={dimensions}>
-      <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
+      <svg
+        ref={svgRef}
+        style={{ width: "100%", height: "100%" }}
+        // viewBox="0 0 600 600"
+        // preserveAspectRatio="xMidYMid slice"
+        // preserveAspectRatio="none"
+      >
         {children}
       </svg>
     </SvgDimensionsContext.Provider>

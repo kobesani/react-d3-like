@@ -1,7 +1,7 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
 import { useAxis } from "../../hooks/Axis";
 
-interface AxisBottomProps {
+interface AxisTopProps {
   tickWidth: number;
   padding: number;
   dataLowerBound: number;
@@ -10,14 +10,14 @@ interface AxisBottomProps {
   nTicks: number;
 }
 
-const AxisBottom = ({
+const AxisTop = ({
   tickWidth,
   padding,
   dataLowerBound,
   dataUpperBound,
   nTicks,
   invert,
-}: AxisBottomProps) => {
+}: AxisTopProps) => {
   const { width, height } = useSvgDimensions();
   const { domainSteps, rangeSteps } = useAxis({
     padding,
@@ -28,39 +28,40 @@ const AxisBottom = ({
     tickWidth,
   });
 
-  const scaleFactor = Math.max(0.65, (width / 1900));
+  const scaleFactor = Math.max(0.65, width / 1900);
 
   return (
     <>
-      <g id="axis-bottom">
+      <g id="axis-top">
         <line
           x1={padding}
           x2={width - padding}
-          y1={height - padding}
-          y2={height - padding}
+          y1={padding}
+          y2={padding}
           stroke="black"
         />
       </g>
-      <g id="axis-bottom-ticks">
+      <g id="axis-top-ticks">
         {rangeSteps.map((step, index) => (
           <line
+            id="axis-top-tick"
             key={index}
             stroke="black"
             x1={step}
             x2={step}
-            y1={height - padding + tickWidth}
-            y2={height - padding}
+            y1={padding - tickWidth}
+            y2={padding}
           />
         ))}
       </g>
       <g transform={`scale(${scaleFactor})`}>
         {rangeSteps.map((step, index) => (
           <text
-            id="axis-bottom-tick-labels"
+            id="axis-top-tick-labels"
             key={index}
             fill="white"
             x={step / scaleFactor}
-            y={(height - padding + tickWidth * 3) / scaleFactor}
+            y={(padding - tickWidth * 3) / scaleFactor}
             fontSize={16}
             textAnchor="middle"
             dominantBaseline="middle"
@@ -73,4 +74,4 @@ const AxisBottom = ({
   );
 };
 
-export default AxisBottom;
+export default AxisTop;

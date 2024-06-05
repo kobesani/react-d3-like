@@ -2,6 +2,8 @@ import "./assets/css/App.css";
 
 import AxisLeft from "./components/Axes/AxisLeft";
 import AxisBottom from "./components/Axes/AxisBottom";
+import AxisRight from "./components/Axes/AxisRight";
+import AxisTop from "./components/Axes/AxisTop";
 import SvgDimensionsProvider from "./components/Providers/SvgDimensionsProvider";
 
 function App() {
@@ -23,7 +25,23 @@ function App() {
             invert={true}
             nTicks={10}
           />
+          <AxisRight
+            tickWidth={10}
+            padding={50}
+            dataLowerBound={10}
+            dataUpperBound={200}
+            invert={true}
+            nTicks={10}
+          />
           <AxisBottom
+            tickWidth={10}
+            padding={50}
+            dataLowerBound={0}
+            dataUpperBound={111}
+            invert={false}
+            nTicks={10}
+          />
+          <AxisTop
             tickWidth={10}
             padding={50}
             dataLowerBound={0}

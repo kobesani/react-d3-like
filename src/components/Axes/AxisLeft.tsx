@@ -1,4 +1,5 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
+import { useAxis } from "../../hooks/Axis";
 
 interface AxisLeftProps {
   tickWidth: number;
@@ -17,25 +18,17 @@ const AxisLeft = ({
   nTicks,
   invert,
 }: AxisLeftProps) => {
-  const { height } = useSvgDimensions();
+  const { width, height } = useSvgDimensions();
+  const { domainSteps, rangeSteps } = useAxis({
+    padding,
+    dataLowerBound,
+    dataUpperBound,
+    invert,
+    nTicks,
+    tickWidth,
+  });
 
-  const xOutputStart = padding;
-  const xOutputEnd = height - padding;
-  const xSlope =
-    (xOutputEnd - xOutputStart) / (dataUpperBound - dataLowerBound);
-
-  const xPositionCalculator = (xValue: number) =>
-    xOutputStart + xSlope * (xValue - dataLowerBound);
-
-  const stepSize = (dataUpperBound - dataLowerBound) / nTicks;
-
-  const domainSteps = [...Array(nTicks + 1).keys()].map(
-    (x) => x * stepSize + dataLowerBound
-  );
-
-  const rangeSteps = (invert ? domainSteps.slice().reverse() : domainSteps).map(
-    (x) => xPositionCalculator(x)
-  );
+  const scaleFactor = Math.max(0.6, width / 1900);
 
   return (
     <>
@@ -51,6 +44,7 @@ const AxisLeft = ({
       <g id="axis-left-ticks">
         {rangeSteps.map((step, index) => (
           <line
+            id="axis-left-tick"
             key={index}
             stroke="black"
             x1={padding - tickWidth}
@@ -59,13 +53,15 @@ const AxisLeft = ({
             y2={step}
           />
         ))}
+      </g>
+      <g transform={`scale(${scaleFactor})`}>
         {rangeSteps.map((step, index) => (
           <text
             id="axis-left-tick-labels"
             key={index}
             fill="white"
-            x={padding - tickWidth * 3}
-            y={step}
+            x={(padding - tickWidth * 3) / scaleFactor}
+            y={step / scaleFactor}
             textAnchor="middle"
             fontSize={16}
             dominantBaseline="middle"
