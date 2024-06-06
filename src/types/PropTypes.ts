@@ -3,6 +3,7 @@ export interface CircleProps {
   cy: number;
   r: number;
   fill: string;
+  tooltip: string;
 }
 
 export interface RectangleProps {

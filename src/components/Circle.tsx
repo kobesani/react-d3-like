@@ -8,7 +8,9 @@ const Circle = (props: CircleProps) => {
         cy={props.cy}
         r={props.r}
         fill={props.fill}
-      ></circle>
+      >
+        <title>{props.tooltip}</title>
+      </circle>
     </>
   );
 };

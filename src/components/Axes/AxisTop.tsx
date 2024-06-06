@@ -66,7 +66,7 @@ const AxisTop = ({
             textAnchor="middle"
             dominantBaseline="middle"
           >
-            {Math.round(domainSteps[index])}
+            {domainSteps[index]}
           </text>
         ))}
       </g>
