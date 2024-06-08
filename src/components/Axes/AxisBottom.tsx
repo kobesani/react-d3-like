@@ -1,5 +1,6 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
 import { useAxis } from "../../hooks/Axis";
+import Line from "../Shapes/Line";
 
 interface AxisBottomProps {
   tickWidth: number;
@@ -28,28 +29,30 @@ const AxisBottom = ({
     tickWidth,
   });
 
-  const scaleFactor = Math.max(0.65, (width / 1900));
+  const scaleFactor = Math.max(0.65, width / 1900);
 
   return (
     <>
       <g id="axis-bottom">
-        <line
-          x1={padding}
-          x2={width - padding}
-          y1={height - padding}
-          y2={height - padding}
-          stroke="black"
+        <Line
+          id="axis-bottom-line"
+          xStart={padding}
+          xStop={width - padding}
+          yStart={height - padding}
+          yStop={height - padding}
+          color="black"
         />
       </g>
       <g id="axis-bottom-ticks">
         {rangeSteps.map((step, index) => (
-          <line
+          <Line
             key={index}
-            stroke="black"
-            x1={step}
-            x2={step}
-            y1={height - padding + tickWidth}
-            y2={height - padding}
+            className="axis-bottom-ticks"
+            xStart={step}
+            xStop={step}
+            yStart={height - padding + tickWidth}
+            yStop={height - padding}
+            color="black"
           />
         ))}
       </g>

@@ -1,5 +1,6 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
 import { useAxis } from "../../hooks/Axis";
+import Line from "../Shapes/Line";
 
 interface AxisTopProps {
   tickWidth: number;
@@ -33,24 +34,25 @@ const AxisTop = ({
   return (
     <>
       <g id="axis-top">
-        <line
-          x1={padding}
-          x2={width - padding}
-          y1={padding}
-          y2={padding}
-          stroke="black"
+        <Line
+          id="axis-top-line"
+          xStart={padding}
+          xStop={width - padding}
+          yStart={padding}
+          yStop={padding}
+          color="black"
         />
       </g>
       <g id="axis-top-ticks">
         {rangeSteps.map((step, index) => (
-          <line
-            id="axis-top-tick"
+          <Line
+            className="axis-top-ticks"
             key={index}
-            stroke="black"
-            x1={step}
-            x2={step}
-            y1={padding - tickWidth}
-            y2={padding}
+            xStart={step}
+            xStop={step}
+            yStart={padding - tickWidth}
+            yStop={padding}
+            color="black"
           />
         ))}
       </g>

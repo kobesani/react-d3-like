@@ -5,3 +5,13 @@ export interface CircleProps {
   fill: string;
   tooltip: string;
 }
+
+export interface LineProps {
+  id?: string;
+  className?: string;
+  xStart: number;
+  xStop: number;
+  yStart: number;
+  yStop: number;
+  color: string;
+}
