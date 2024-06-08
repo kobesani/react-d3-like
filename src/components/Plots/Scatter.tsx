@@ -1,5 +1,5 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
-import Circle from "../Circle";
+import Circle from "../Shapes/Circle";
 
 interface ScatterplotProps {
   x: number[];
@@ -9,6 +9,7 @@ interface ScatterplotProps {
   maxX: number;
   maxY: number;
   padding: number;
+  color: string;
 }
 
 const Scatterplot = ({
@@ -19,6 +20,7 @@ const Scatterplot = ({
   maxX,
   maxY,
   padding,
+  color,
 }: ScatterplotProps) => {
   const { width, height } = useSvgDimensions();
 
@@ -45,7 +47,7 @@ const Scatterplot = ({
             cx={value}
             cy={transformedY[index]}
             r={5}
-            fill="white"
+            fill={color}
             tooltip={`(${x[index].toFixed(2)}, ${y[index].toFixed(2)})`}
           />
         ))}

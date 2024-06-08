@@ -1,5 +1,5 @@
 #svg-container svg {
   border: 1px solid grey;
-  cursor: grab;
+  cursor: pointer;
   box-sizing: border-box;
 }

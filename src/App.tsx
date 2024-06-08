@@ -30,25 +30,26 @@ function App() {
             minX={1}
             minY={0}
             maxX={7}
-            maxY={2.5}
+            maxY={3}
             padding={50}
+            color="seagreen"
           />
           <AxisLeft
             tickWidth={10}
             padding={50}
             dataLowerBound={0}
-            dataUpperBound={2.5}
+            dataUpperBound={3}
             invert={true}
-            nTicks={5}
+            nTicks={3}
           />
-          {/* <AxisRight
+          <AxisRight
             tickWidth={10}
             padding={50}
-            dataLowerBound={10}
-            dataUpperBound={200}
+            dataLowerBound={0}
+            dataUpperBound={3}
             invert={true}
-            nTicks={10}
-          /> */}
+            nTicks={3}
+          />
           <AxisBottom
             tickWidth={10}
             padding={50}
@@ -57,14 +58,14 @@ function App() {
             invert={false}
             nTicks={6}
           />
-          {/* <AxisTop
+          <AxisTop
             tickWidth={10}
             padding={50}
-            dataLowerBound={0}
-            dataUpperBound={111}
+            dataLowerBound={1}
+            dataUpperBound={7}
             invert={false}
-            nTicks={10}
-          /> */}
+            nTicks={6}
+          />
         </SvgDimensionsProvider>
       </div>
     </>
