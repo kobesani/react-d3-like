@@ -1,5 +1,6 @@
 import { useAxis } from "../../hooks/Axis";
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
+import Line from "../Shapes/Line";
 
 interface AxisRightProps {
   tickWidth: number;
@@ -33,24 +34,25 @@ const AxisRight = ({
   return (
     <>
       <g id="axis-right">
-        <line
-          x1={width - padding}
-          x2={width - padding}
-          y1={padding}
-          y2={height - padding}
-          stroke="black"
+        <Line
+          id="axis-right-line"
+          xStart={width - padding}
+          xStop={width - padding}
+          yStart={padding}
+          yStop={height - padding}
+          color="black"
         />
       </g>
       <g id="axis-right-ticks">
         {rangeSteps.map((step, index) => (
-          <line
-            id="axis-right-tick"
+          <Line
             key={index}
-            stroke="black"
-            x1={width - (padding - tickWidth)}
-            y1={step}
-            x2={width - padding}
-            y2={step}
+            className="axis-right-ticks"
+            xStart={width - (padding - tickWidth)}
+            xStop={width - padding}
+            yStart={step}
+            yStop={step}
+            color="black"
           />
         ))}
       </g>

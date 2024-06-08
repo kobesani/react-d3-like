@@ -1,5 +1,6 @@
 import { useSvgDimensions } from "../../hooks/SvgDimensions";
 import { useAxis } from "../../hooks/Axis";
+import Line from "../Shapes/Line";
 
 interface AxisLeftProps {
   tickWidth: number;
@@ -33,24 +34,25 @@ const AxisLeft = ({
   return (
     <>
       <g id="axis-left">
-        <line
-          x1={padding}
-          x2={padding}
-          y1={padding}
-          y2={height - padding}
-          stroke="black"
+        <Line
+          id="axis-left-line"
+          xStart={padding}
+          xStop={padding}
+          yStart={padding}
+          yStop={height - padding}
+          color="black"
         />
       </g>
       <g id="axis-left-ticks">
         {rangeSteps.map((step, index) => (
-          <line
-            id="axis-left-tick"
+          <Line
             key={index}
-            stroke="black"
-            x1={padding - tickWidth}
-            y1={step}
-            x2={padding}
-            y2={step}
+            className="axis-left-ticks"
+            xStart={padding - tickWidth}
+            xStop={padding}
+            yStart={step}
+            yStop={step}
+            color="black"
           />
         ))}
       </g>

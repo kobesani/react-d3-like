@@ -1,10 +1,18 @@
-import { useSvgDimensions } from "../../hooks/SvgDimensions";
+import { CircleProps } from "./Types";
 
-const Circle = () => {
-  const { width, height } = useSvgDimensions();
-  const radius = Math.min(width, height) / 4;
-
-  return <circle cx={width / 2} cy={height / 2} r={radius} fill="blue" />;
+const Circle = (props: CircleProps) => {
+  return (
+    <>
+      <circle
+        cx={props.cx}
+        cy={props.cy}
+        r={props.r}
+        fill={props.fill}
+      >
+        <title>{props.tooltip}</title>
+      </circle>
+    </>
+  );
 };
 
 export default Circle;
