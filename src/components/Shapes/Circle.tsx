@@ -1,4 +1,4 @@
-import { CircleProps } from "../../types/PropTypes";
+import { CircleProps } from "./Types";
 
 const Circle = (props: CircleProps) => {
   return (
