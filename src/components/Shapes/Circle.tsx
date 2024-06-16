@@ -8,6 +8,7 @@ const Circle = (props: CircleProps) => {
         cy={props.cy}
         r={props.r}
         fill={props.fill}
+        stroke={props.stroke}
       >
         <title>{props.tooltip}</title>
       </circle>

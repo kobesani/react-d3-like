@@ -49,6 +49,7 @@ const Scatterplot = ({
             r={5}
             fill={color}
             tooltip={`(${x[index].toFixed(2)}, ${y[index].toFixed(2)})`}
+            stroke="none"
           />
         ))}
       </g>

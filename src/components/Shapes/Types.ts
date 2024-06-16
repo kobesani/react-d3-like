@@ -3,7 +3,8 @@ export interface CircleProps {
   cy: number;
   r: number;
   fill: string;
-  tooltip: string;
+  tooltip?: string;
+  stroke: string;
 }
 
 export interface LineProps {

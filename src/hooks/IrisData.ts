@@ -63,6 +63,9 @@ export const calculateMinMax = (
   data: IrisData[],
   field: keyof IrisData
 ): FieldExtent => {
+  if (data.length === 0) {
+    return { max: 0, min: 0 };
+  }
   const values = data
     .map((obj) => obj[field])
     .filter((value) => typeof value === "number")
@@ -101,7 +104,8 @@ export const useIrisData = ({ xColumn, yColumn }: UseIrisDataProps) => {
       try {
         const data = await fetchIrisData();
         setIrisData(data);
-        setScatterExtent(dataExtent(data, xColumn, yColumn));
+        const extent = dataExtent(data, xColumn, yColumn);
+        setScatterExtent(extent);
       } catch (error) {
         console.error(error);
       }
