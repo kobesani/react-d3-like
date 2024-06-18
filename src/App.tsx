@@ -10,7 +10,6 @@ import { useIrisData } from "./hooks/IrisData";
 import Scatterplot from "./components/Plots/Scatter";
 import Polygon from "./components/Polygon";
 import RadarPlot from "./components/Plots/Radar";
-import { tokenizeNewick } from "./utils/Tree";
 
 function App() {
   const { x, y, minX, minY, maxX, maxY } = useIrisData({
@@ -18,9 +17,6 @@ function App() {
     yColumn: "petal_width",
   });
 
-  const newickString = "(ABCB:0.1,B:0.2,(C:0.3,D:0.4):0.5);";
-  const tokens = tokenizeNewick(newickString);
-  console.log(tokens);
   return (
     <>
       <div

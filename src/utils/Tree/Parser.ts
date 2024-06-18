@@ -61,9 +61,9 @@ export class NewickParser {
 
   parseC = (node: Node) => {
     if (this.acceptToken("OPEN_PAREN", false)) {
-      console.log(
-        `In parseC, token accepted: TOKEN = ${this.tokens[this.index].type}`
-      );
+      // console.log(
+      //   `In parseC, token accepted: TOKEN = ${this.tokens[this.index].type}`
+      // );
       this.parseN(node);
       this.parseM(node);
       this.acceptToken("CLOSE_PAREN", true);
@@ -72,9 +72,9 @@ export class NewickParser {
 
   parseM = (node: Node) => {
     if (this.acceptToken("COMMA", false)) {
-      console.log(
-        `In parseM, token accepted: TOKEN = ${this.tokens[this.index].type}`
-      );
+      // console.log(
+      //   `In parseM, token accepted: TOKEN = ${this.tokens[this.index].type}`
+      // );
       this.parseN(node);
       this.parseM(node);
     }
