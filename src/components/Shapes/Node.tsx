@@ -40,14 +40,17 @@ const NodeLayout = ({
   );
   const verticalPosition = verticalAxisMapping(getVerticalPositioning(node));
 
-  // prepare for drawing vertical node lines (pipes below)
-  //  ___________
-  // |
-  // |
-  // |
-  // |___________
-  //
-  // min and max of child heights are used to draw line for the parent node
+  /*
+    Prepare to draw vertical lines (pipes below)
+     ____________
+    |
+    |
+    |
+    |____________
+
+    The min and max of the child heights are used to draw a vertical line
+    for the parent node, which connects the branches of the children.
+  */
 
   const verticalPositionsChildren = node.children.map((child) =>
     verticalAxisMapping(getVerticalPositioning(child))
@@ -72,6 +75,15 @@ const NodeLayout = ({
           cy={verticalPosition}
           fill="red"
         />
+        {/* 
+          if the node.label is not defined, currently, this means that it is
+          a leaf node, but this is definitely open to interpretation and will
+          require some additional work...
+          (1) we may want to position the node labels for internal nodes on top of the
+          branch or behind the node connection point.
+          (2) for leaf nodes, it is simpler, we want to render the node label behind the
+          node connection point, i.e. at the end of the tip.
+        */}
         {node.label !== undefined ? (
           <text
             textAnchor="middle"
@@ -84,6 +96,11 @@ const NodeLayout = ({
             {node.label}
           </text>
         ) : null}
+        {/* 
+          if there are no children, this is an internal node, we want to render a
+          vertical line at the initial position of the node to connect the nodes
+          for the children
+        */}
         {verticalPositionsChildren.length !== 0 ? (
           <line
             id={`tree-node-${node.id}-vertical-delimiter`}

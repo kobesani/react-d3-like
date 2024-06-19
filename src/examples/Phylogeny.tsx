@@ -35,7 +35,6 @@ const Phylogeny = ({
 
   const treeWidth = tree.getMaxDistanceToRoot();
   const leafNodes = tree.getLeafNodes();
-  const padding = 20;
 
   // minus default branch length to add small bit of branch length for the root.
   const horizontalAxisMapping = useLinearScale({
