@@ -5,6 +5,8 @@ import { Node, Tree } from "../utils/Tree/Tree";
 
 import SvgDimensionsProvider from "../components/Providers/SvgDimensionsProvider";
 import { useSvgDimensions } from "../hooks/SvgDimensions";
+import { useLinearScale } from "../hooks/Axis";
+import NodeLayout from "../components/Shapes/Node";
 
 interface PhylogenyProps {
   tree: Tree;
@@ -13,106 +15,44 @@ interface PhylogenyProps {
 const Phylogeny = ({ tree }: PhylogenyProps) => {
   const { width, height } = useSvgDimensions();
 
+  const treeWidth = tree.getMaxDistanceToRoot();
   const leafNodes = tree.getLeafNodes();
+  const padding = 20;
+
+  const horizontalAxisMapping = useLinearScale({
+    domain: [0, treeWidth],
+    range: [padding, width - padding],
+  });
+
+  const verticalAxisMapping = useLinearScale({
+    domain: [0, leafNodes.length],
+    range: [padding, height - padding],
+  });
+
   const leafNodesToIndex = new Map<Node, number>(
     leafNodes.map((node, index) => [node, index])
   );
 
-  const getVerticalPositioning = (node: Node): number =>
-    node.isLeaf() && leafNodesToIndex.has(node)
-      ? // all leaf nodes should be in the leafNodesToIndex map
-        leafNodesToIndex.get(node)!
-      : // if it is not a leaf node we take the average of the vertical positioning of the children
-        node.children.reduce(
-          (accumulator, child) => accumulator + getVerticalPositioning(child),
-          0
-        ) / node.children.length;
-  const stepSize = height / leafNodes.length;
-  const padding = 20;
-  const treeWidth = tree.getMaxDistanceToRoot();
-  const branchLengthScalar = width / treeWidth;
-  const values = tree.getAllNodes("preorder").map((node, index) => ({
-    id: node.id,
-    label: node.label,
-    xValue:
-      (node.branchLength ? node.branchLength : 0) * branchLengthScalar +
-      padding,
-    rootDistance: node.getDistanceToRoot() * branchLengthScalar,
-    branchlength:
-      (node.branchLength ? node.branchLength : 1) * branchLengthScalar,
-    yValue: getVerticalPositioning(node) * stepSize + padding,
-  }));
-
-  const getMinMaxVerticalPositioning = (
-    node: Node
-  ): {
-    min: number;
-    max: number;
-    rootDistance: number;
-    branchLength: number;
-  } => {
-    const childrenPositions = node.children.map((child) =>
-      getVerticalPositioning(child)
-    );
-    const min = Math.min(...childrenPositions) * stepSize + padding;
-    const max = Math.max(...childrenPositions) * stepSize + padding;
-    const rootDistance = node.getDistanceToRoot() * branchLengthScalar;
-    const branchLength =
-      (node.branchLength ? node.branchLength : 0) * branchLengthScalar;
-    return { min, max, rootDistance, branchLength };
-  };
-
-  const nonLeafNodesMinMax = tree
-    .getAllNodes("preorder")
-    .filter((node) => !node.isLeaf())
-    .map((node) => getMinMaxVerticalPositioning(node));
-
-  console.log(values);
-
   return (
     <>
-      {values.map((value, index) => (
-        <g key={index}>
-          <circle r={5} cx={value.rootDistance} cy={value.yValue} fill="red" />
-          <text
+      <g>
+        {tree.getAllNodes("preorder").map((node, index) => (
+          <NodeLayout
             key={index}
-            textAnchor="middle"
-            fontSize={16}
-            dominantBaseline="middle"
-            fill="white"
-            x={value.rootDistance}
-            y={value.yValue}
-          >
-            {value.label}
-          </text>
-          <line
-            key={100 + value.id}
-            stroke="white"
-            x1={value.rootDistance}
-            x2={value.rootDistance - value.branchlength}
-            y1={value.yValue}
-            y2={value.yValue}
+            node={node}
+            verticalAxisMapping={verticalAxisMapping}
+            horizontalAxisMapping={horizontalAxisMapping}
+            leafNodeIndexMap={leafNodesToIndex}
           />
-        </g>
-      ))}
-
-      {nonLeafNodesMinMax.map((value, index) => (
-          <line
-            key={200 + index}
-            stroke="white"
-            x1={value.rootDistance}
-            x2={value.rootDistance}
-            y1={value.min}
-            y2={value.max}
-          />
-      ))}
+        ))}
+      </g>
     </>
   );
 };
 
 const App = () => {
   const exampleTree =
-    "(ant:17, ((bat:31, cow:22):25, dog:22):10, (elk:33, fox:12):10);";
+    "(ant:17, ((bat:31, cow:22):25, dog:22):10, (giraffe:15, (elk:33, fox:12):10):11);";
   const [newick, setNewick] = useState(exampleTree);
 
   const [tree, setTree] = useState<Tree | null>(null);
