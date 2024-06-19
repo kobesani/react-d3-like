@@ -8,25 +8,44 @@ import { useSvgDimensions } from "../hooks/SvgDimensions";
 import { useLinearScale } from "../hooks/Axis";
 import NodeLayout from "../components/Shapes/Node";
 
-interface PhylogenyProps {
-  tree: Tree;
+interface PhylogenyDefaults {
+  rootBranchLength: number;
+  paddingLeft: number;
+  paddingRight: number;
+  paddingTop: number;
+  paddingBottom: number;
 }
 
-const Phylogeny = ({ tree }: PhylogenyProps) => {
+interface PhylogenyProps {
+  tree: Tree;
+  defaults?: PhylogenyDefaults;
+}
+
+const Phylogeny = ({
+  tree,
+  defaults = {
+    rootBranchLength: 1,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+}: PhylogenyProps) => {
   const { width, height } = useSvgDimensions();
 
   const treeWidth = tree.getMaxDistanceToRoot();
   const leafNodes = tree.getLeafNodes();
   const padding = 20;
 
+  // minus default branch length to add small bit of branch length for the root.
   const horizontalAxisMapping = useLinearScale({
-    domain: [0, treeWidth],
-    range: [padding, width - padding],
+    domain: [-defaults.rootBranchLength, treeWidth],
+    range: [defaults.paddingLeft, width - defaults.paddingRight],
   });
 
   const verticalAxisMapping = useLinearScale({
     domain: [0, leafNodes.length],
-    range: [padding, height - padding],
+    range: [defaults.paddingTop, height - defaults.paddingBottom],
   });
 
   const leafNodesToIndex = new Map<Node, number>(
@@ -43,6 +62,7 @@ const Phylogeny = ({ tree }: PhylogenyProps) => {
             verticalAxisMapping={verticalAxisMapping}
             horizontalAxisMapping={horizontalAxisMapping}
             leafNodeIndexMap={leafNodesToIndex}
+            defaultBranchLength={defaults.rootBranchLength}
           />
         ))}
       </g>
@@ -52,7 +72,7 @@ const Phylogeny = ({ tree }: PhylogenyProps) => {
 
 const App = () => {
   const exampleTree =
-    "(ant:17, ((bat:31, cow:22):25, dog:22):10, (giraffe:15, (elk:33, fox:12):10):11);";
+    "(ant:17, ((bat:31, cow:22):25, dog:22):10, ((elk:33, fox:12):10, giraffe:15):11);";
   const [newick, setNewick] = useState(exampleTree);
 
   const [tree, setTree] = useState<Tree | null>(null);
@@ -63,15 +83,15 @@ const App = () => {
     const parsedTree = parser.parseTree();
     setTree(parsedTree);
     parsedTree
-      ?.getLeafNodes()
-      .forEach((leaf) =>
+      ?.getAllNodes("preorder")
+      .forEach((node) =>
         console.log(
-          leaf.id,
-          leaf.label,
-          leaf.branchLength,
-          leaf.isRoot(),
-          leaf.isLeaf(),
-          leaf.getDistanceToRoot()
+          node.id,
+          node.label,
+          node.branchLength,
+          node.isRoot(),
+          node.isLeaf(),
+          node.getDistanceToRoot()
         )
       );
   };

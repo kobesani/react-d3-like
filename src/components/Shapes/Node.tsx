@@ -2,9 +2,10 @@ import { Node } from "../../utils/Tree/Tree";
 
 export interface NodeLayout {
   node: Node;
-  verticalAxisMapping: (arg0: number) => number;
-  horizontalAxisMapping: (arg0: number) => number;
+  verticalAxisMapping: (domainValue: number) => number;
+  horizontalAxisMapping: (domainValue: number) => number;
   leafNodeIndexMap: Map<Node, number>;
+  defaultBranchLength: number;
 }
 
 const NodeLayout = ({
@@ -12,23 +13,30 @@ const NodeLayout = ({
   verticalAxisMapping,
   horizontalAxisMapping,
   leafNodeIndexMap,
+  defaultBranchLength,
 }: NodeLayout) => {
   const getVerticalPositioning = (node: Node): number => {
     if (node.isLeaf() && leafNodeIndexMap.has(node)) {
       return leafNodeIndexMap.get(node)!;
     } else {
-      return node.children.reduce(
-        (acc, child) => acc + getVerticalPositioning(child),
-        0
-      ) / node.children.length;
+      return (
+        node.children.reduce(
+          (acc, child) => acc + getVerticalPositioning(child),
+          0
+        ) / node.children.length
+      );
     }
   };
 
+  // need to flip these around somehow so that the both are still in the domain range.
   const initialHorizontalPosition = horizontalAxisMapping(
     node.getDistanceToRoot()
   );
   const finalHorizontalPosition = horizontalAxisMapping(
-    node.getDistanceToRoot() - (node.branchLength ? node.branchLength : 0)
+    node.getDistanceToRoot() -
+      (node.branchLength !== undefined
+        ? node.branchLength
+        : defaultBranchLength)
   );
   const verticalPosition = verticalAxisMapping(getVerticalPositioning(node));
 
@@ -86,25 +94,14 @@ const NodeLayout = ({
             stroke="white"
           />
         ) : null}
-        {node.branchLength !== undefined ? (
-          <line
-            id={`tree-node-${node.id}-branch-delimiter`}
-            x1={initialHorizontalPosition}
-            x2={finalHorizontalPosition}
-            y1={verticalPosition}
-            y2={verticalPosition}
-            stroke="white"
-          />
-        ) : (
-          <line
-            id={`tree-node-${node.id}-branch-delimiter`}
-            x1={initialHorizontalPosition}
-            x2={initialHorizontalPosition - 5}
-            y1={verticalPosition}
-            y2={verticalPosition}
-            stroke="white"
-          />
-        )}
+        <line
+          id={`tree-node-${node.id}-branch-delimiter`}
+          x1={initialHorizontalPosition}
+          x2={finalHorizontalPosition}
+          y1={verticalPosition}
+          y2={verticalPosition}
+          stroke="white"
+        />
       </g>
     </>
   );
