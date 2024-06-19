@@ -1,16 +1,13 @@
-import "./assets/css/App.css";
+import "../assets/css/App.css";
 
-import AxisLeft from "./components/Axes/AxisLeft";
-import AxisBottom from "./components/Axes/AxisBottom";
-import AxisRight from "./components/Axes/AxisRight";
-import AxisTop from "./components/Axes/AxisTop";
-import SvgDimensionsProvider from "./components/Providers/SvgDimensionsProvider";
+import AxisLeft from "../components/Axes/AxisLeft";
+import AxisBottom from "../components/Axes/AxisBottom";
+import AxisRight from "../components/Axes/AxisRight";
+import AxisTop from "../components/Axes/AxisTop";
+import SvgDimensionsProvider from "../components/Providers/SvgDimensionsProvider";
 
-import { useIrisData } from "./hooks/IrisData";
-import Scatterplot from "./components/Plots/Scatter";
-import Polygon from "./components/Polygon";
-import RadarPlot from "./components/Plots/Radar";
-import { tokenizeNewick } from "./utils/Tree";
+import { useIrisData } from "../hooks/IrisData";
+import Scatterplot from "../components/Plots/Scatter";
 
 function App() {
   const { x, y, minX, minY, maxX, maxY } = useIrisData({
@@ -18,9 +15,6 @@ function App() {
     yColumn: "petal_width",
   });
 
-  const newickString = "(ABCB:0.1,B:0.2,(C:0.3,D:0.4):0.5);";
-  const tokens = tokenizeNewick(newickString);
-  console.log(tokens);
   return (
     <>
       <div
@@ -28,7 +22,6 @@ function App() {
         className="svg-container"
         style={{
           height: "600px",
-          // width: "600px",
           width: "100%",
         }}
       >
@@ -75,19 +68,6 @@ function App() {
             invert={false}
             nTicks={6}
           />
-        </SvgDimensionsProvider>
-      </div>
-      <div
-        id="svg-container-2"
-        className="svg-container"
-        style={{
-          height: "600px",
-          width: "600px",
-          // width: "100%",
-        }}
-      >
-        <SvgDimensionsProvider>
-          <RadarPlot numberOfSides={5} radius={250} angleShift={Math.PI / 2} />
         </SvgDimensionsProvider>
       </div>
     </>
