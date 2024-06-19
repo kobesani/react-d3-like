@@ -49,7 +49,7 @@ export const useLinearScale = ({
   range,
 }: LinearScaleProps): ((n: number) => number) => {
   return (n: number) =>
-    ((range[1] - range[0]) / (domain[1] - domain[0])) * n + range[0];
+    range[0] + ((range[1] - range[0]) / (domain[1] - domain[0])) * (n - domain[0]);
 };
 
 interface LinearAxisProps {
