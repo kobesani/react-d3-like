@@ -7,9 +7,11 @@ import SvgDimensionsProvider from "../components/Providers/SvgDimensionsProvider
 import { useSvgDimensions } from "../hooks/SvgDimensions";
 import { useLinearScale } from "../hooks/Axis";
 import NodeLayout from "../components/Shapes/Node";
+import { useLongestSvgText } from "../hooks/SvgText";
 
 interface PhylogenyDefaults {
   rootBranchLength: number;
+  nodeLabelPadding: number;
   paddingLeft: number;
   paddingRight: number;
   paddingTop: number;
@@ -25,21 +27,40 @@ const Phylogeny = ({
   tree,
   defaults = {
     rootBranchLength: 1,
+    nodeLabelPadding: 5,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
     paddingBottom: 20,
   },
 }: PhylogenyProps) => {
+  const maxLabelLength = useLongestSvgText({
+    textsToRender: tree
+      .getAllNodes("preorder")
+      .filter((node) => node.label !== undefined)
+      .map((node) => node.label!), // definitely defined because the undefined are filtered!
+    fontSize: 16,
+  });
+
+  console.log(`MAXLABELLENGTH: ${maxLabelLength}`);
   const { width, height } = useSvgDimensions();
 
-  const treeWidth = tree.getMaxDistanceToRoot();
   const leafNodes = tree.getLeafNodes();
 
-  // minus default branch length to add small bit of branch length for the root.
+  // prepping horizontal axis domain and range
+  // add a little space for a small piece of branch for the root
+  const domainLowerBound = -defaults.rootBranchLength;
+  const domainUpperBound = tree.getMaxDistanceToRoot();
+  const rangeLowerBound = defaults.paddingLeft;
+  // adjusting upper bound for adding node labels for the leaf nodes
+  // leaves maximum space for a label, plus default padding and node label padding between tips
+  const rangeUpperBound =
+    width -
+    (defaults.paddingRight + defaults.nodeLabelPadding + maxLabelLength);
+
   const horizontalAxisMapping = useLinearScale({
-    domain: [-defaults.rootBranchLength, treeWidth],
-    range: [defaults.paddingLeft, width - defaults.paddingRight],
+    domain: [domainLowerBound, domainUpperBound],
+    range: [rangeLowerBound, rangeUpperBound],
   });
 
   const verticalAxisMapping = useLinearScale({
@@ -62,6 +83,7 @@ const Phylogeny = ({
             horizontalAxisMapping={horizontalAxisMapping}
             leafNodeIndexMap={leafNodesToIndex}
             defaultBranchLength={defaults.rootBranchLength}
+            nodeLabelPadding={defaults.nodeLabelPadding}
           />
         ))}
       </g>
@@ -97,7 +119,7 @@ const App = () => {
   return (
     <>
       <div>
-        <div>
+        <div style={{ color: "white" }}>
           Enter a newick tree:{" "}
           <input
             value={newick}

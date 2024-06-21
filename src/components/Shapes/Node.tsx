@@ -1,11 +1,12 @@
 import { Node } from "../../utils/Tree/Tree";
 
-export interface NodeLayout {
+export interface NodeLayoutProps {
   node: Node;
   verticalAxisMapping: (domainValue: number) => number;
   horizontalAxisMapping: (domainValue: number) => number;
   leafNodeIndexMap: Map<Node, number>;
   defaultBranchLength: number;
+  nodeLabelPadding: number;
 }
 
 const NodeLayout = ({
@@ -14,7 +15,8 @@ const NodeLayout = ({
   horizontalAxisMapping,
   leafNodeIndexMap,
   defaultBranchLength,
-}: NodeLayout) => {
+  nodeLabelPadding,
+}: NodeLayoutProps) => {
   const getVerticalPositioning = (node: Node): number => {
     if (node.isLeaf() && leafNodeIndexMap.has(node)) {
       return leafNodeIndexMap.get(node)!;
@@ -75,22 +77,14 @@ const NodeLayout = ({
           cy={verticalPosition}
           fill="red"
         />
-        {/* 
-          if the node.label is not defined, currently, this means that it is
-          a leaf node, but this is definitely open to interpretation and will
-          require some additional work...
-          (1) we may want to position the node labels for internal nodes on top of the
-          branch or behind the node connection point.
-          (2) for leaf nodes, it is simpler, we want to render the node label behind the
-          node connection point, i.e. at the end of the tip.
-        */}
         {node.label !== undefined ? (
           <text
-            textAnchor="middle"
+            id={`tree-node-${node.id}-label`}
+            textAnchor="start"
             fontSize={16}
             dominantBaseline="middle"
             fill="white"
-            x={initialHorizontalPosition}
+            x={initialHorizontalPosition + nodeLabelPadding}
             y={verticalPosition}
           >
             {node.label}
@@ -109,6 +103,7 @@ const NodeLayout = ({
             x2={initialHorizontalPosition}
             y2={maxVerticalPosition}
             stroke="white"
+            strokeWidth={3}
           />
         ) : null}
         <line
@@ -118,10 +113,21 @@ const NodeLayout = ({
           y1={verticalPosition}
           y2={verticalPosition}
           stroke="white"
+          strokeWidth={3}
+          strokeLinecap="round"
         />
       </g>
     </>
   );
 };
+
+// const InternalNodeLayout = ({
+//   node,
+//   verticalAxisMapping,
+//   horizontalAxisMapping,
+//   leafNodeIndexMap,
+//   defaultBranchLength,
+//   nodeLabelPadding,
+// }: NodeLayoutProps) => {};
 
 export default NodeLayout;
